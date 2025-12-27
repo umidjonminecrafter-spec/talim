@@ -1,6 +1,8 @@
 from django.db import models
 from core.validators import uz_phone_validator
 import uuid
+
+# Yangilangan organization model
 class Organizations(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     STATUS = (
