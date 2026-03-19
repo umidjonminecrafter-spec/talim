@@ -1,7 +1,9 @@
-from django.db import models
 from core.models import BaseModel
 from accounts.models import Employee
 from core.validators import uz_phone_validator
+from django.db import models
+from core.models import BaseModel
+from accounts.models import Employee
 class SmsTemplates(BaseModel):
     name = models.CharField(max_length=250)
     text = models.TextField()
@@ -53,6 +55,32 @@ class SMSMessages(BaseModel):
     send_type = models.CharField(max_length=20, choices=SEND_TYPE)
     status = models.CharField(max_length=20, choices=STATUS)
     sent_at = models.DateTimeField()
+
+
+
+
+
+class SmsProvider(BaseModel):
+    PROVIDER_CHOICES = (
+        ('playmobile', 'PlayMobile'),
+        ('eskiz', 'Eskiz'),
+    )
+
+    provider = models.CharField(max_length=20, choices=PROVIDER_CHOICES, unique=True)
+    email = models.EmailField()
+    password = models.CharField(max_length=255)
+    nickname = models.CharField(max_length=100, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="SMS balans")
+    created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name="providers_created")
+
+    class Meta:
+        db_table = 'sms_provider'
+        verbose_name = 'SMS Provider'
+        verbose_name_plural = 'SMS Providers'
+
+    def __str__(self):
+        return f"{self.get_provider_display()} - {self.email}"
     
 
 

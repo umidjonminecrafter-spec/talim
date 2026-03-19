@@ -15,6 +15,11 @@ class Student(BaseModel):
     email = models.CharField(max_length=20, blank=True, null=True)
     telegram_username = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField()
+    coins = models.PositiveIntegerField(default=0)
+    birth_date = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1,)
+    school = models.CharField(max_length=250, null=True, blank=True)
+    extra_info = models.TextField(null=True, blank=True)
 
 
 class StudentGroup(BaseModel):

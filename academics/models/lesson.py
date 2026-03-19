@@ -1,7 +1,7 @@
-from django.db import models
 from core.models import BaseModel, exam_files_upload_path
-# from academics.models.student import Student
-# from academics.models.group import Group
+from accounts.models import Employee
+from django.db import models
+from core.models import BaseModel
 from accounts.models import Employee
 
 class LessonTime(BaseModel):
@@ -18,6 +18,58 @@ class LessonSchedule(BaseModel):
     day_type = models.CharField(max_length=20, choices=DAY_TYPE)
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+
+# ============ YANGI MODEL: OnlineLesson ============
+
+
+
+
+
+class OnlineLesson(BaseModel):
+    """Onlayn darslar"""
+
+    CONTENT_TYPE = (
+        ('video', 'Video'),
+        ('document', 'Hujjat'),
+        ('image', 'Rasm'),
+        ('link', 'Havola'),
+        ('text', 'Matn'),
+    )
+
+    # Asosiy
+    group = models.ForeignKey('Group', on_delete=models.CASCADE, related_name='online_lessons')
+    title = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True)
+
+    # Kontent turi
+    content_type = models.CharField(max_length=20, choices=CONTENT_TYPE)
+
+    # Fayllar
+    video_url = models.URLField(max_length=500, blank=True, null=True)
+    file = models.FileField(upload_to='online_lessons/', blank=True, null=True)
+    external_link = models.URLField(max_length=500, blank=True, null=True)
+    text_content = models.TextField(blank=True, null=True)
+
+    # Sana va vaqt
+    lesson_date = models.DateField()
+    duration_minutes = models.PositiveIntegerField(default=0)
+
+    # Status
+    is_published = models.BooleanField(default=False)
+    order = models.PositiveIntegerField(default=0)
+
+    # Kim yaratdi
+    created_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True,
+                                   related_name='online_lessons_created')
+
+    class Meta:
+        verbose_name = "Onlayn dars"
+        verbose_name_plural = "Onlayn darslar"
+        ordering = ['group', 'order', '-lesson_date']
+
+    def __str__(self):
+        return f"{self.group.name} - {self.title}"
 
 
 class Exams(BaseModel):

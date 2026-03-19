@@ -23,8 +23,17 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
     SpectacularRedocView,
 )
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
+    # Token olish (login)
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+
+    # Yangi token olish (refresh)
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin/', admin.site.urls),
 # OpenAPI schema
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
@@ -38,6 +47,7 @@ urlpatterns = [
 
     # Redoc UI
     path(
+
         "api/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
